@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "Salesforce Apex Logs Viewer",
+    "version": "1.0",
+    "description": "View today's Apex logs from Salesforce",
+    "permissions": ["storage", "tabs", "system.display","cookies"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_title": "Open Apex Logs"
+    },
+    "host_permissions": ["https://*.salesforce.com/"]
+}
+
+ 
