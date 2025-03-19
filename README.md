@@ -8,5 +8,4 @@ Step 4. Click on Load Unpacked, Select the folder.
 Step 5. Open your salesforce org. Click on extension, then click on our extension.
 
 
-
-(If table dont show data, I want to let you know this code have many bugs in it. Still I would love to slove them, you can share them with me.)
+(If the table doesn't display data, I want you to know that this code still has a few bugs 😂 . But I’d love to fix them! 🚀 Feel free to share any issues you find)
