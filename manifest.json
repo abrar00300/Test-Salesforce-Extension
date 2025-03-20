@@ -10,7 +10,8 @@
     "action": {
         "default_title": "Open Apex Logs"
     },
-    "host_permissions": ["https://*.salesforce.com/"]
+    "host_permissions": ["https://*.salesforce.com/", "https://*.force.com/*"]
+   
 }
 
  

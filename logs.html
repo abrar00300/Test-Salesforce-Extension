@@ -7,17 +7,22 @@
     <script src="logs.js" defer></script>
 
     <style>
-        body {
+        /* Reset margins and set full height */
+        html, body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
             background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
         }
 
         h2 {
             color: #333;
             font-size: 24px;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 10px 0;
         }
 
         #tabUrl {
@@ -27,7 +32,7 @@
             background-color: #e2f7e2;
             padding: 10px;
             border-radius: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             max-width: 90%;
             margin-left: auto;
@@ -35,12 +40,63 @@
             word-wrap: break-word;
         }
 
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        select, input {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Add button styles */
+        .filter-actions {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .reset-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background-color: #e53935;
+        }
+
+        /* Make the table container take full height */
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            background: white;
+            min-height: 0; /* Ensures it doesn't exceed the parent */
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
+            table-layout: fixed;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: #4CAF50;
+            color: white;
+            z-index: 2;
         }
 
         th, td {
@@ -48,15 +104,17 @@
             padding: 12px 15px;
             text-align: left;
             font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
         }
 
         th {
             background-color: #4CAF50;
             color: white;
-        }
-
-        td {
-            background-color: #f9f9f9;
+            position: relative;
+            user-select: none;
         }
 
         tr:nth-child(even) td {
@@ -67,33 +125,203 @@
             background-color: #e6f7e6;
         }
 
-        @media (max-width: 600px) {
-            table {
-                font-size: 12px;
-            }
-            th, td {
-                padding: 8px;
-            }
+        /* Make table headers resizable */
+        th .resize-handle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            cursor: col-resize;
+            background-color: transparent;
         }
+
+        th:hover .resize-handle {
+            background-color: #aaa;
+        }
+
+        th.resizing {
+            background-color: #ddd;
+        }
+        /* Modal background */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 70%; /* Adjust width as needed */
+    max-width: 800px; /* Max width */
+    min-height: 300px; /* Fixed minimum height */
+    height: 700px;
+    overflow-y: auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Close button */
+.close-btn {
+    position: absolute;
+    top: px;
+    right: 10px;
+    font-size: 34px;
+    color: #333;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.close-btn:hover {
+    color: #ff4d4d;
+}
+
+/* Style the log body (the content in the modal) */
+.log-body {
+    font-family: "Courier New", Courier, monospace;
+    white-space: pre-wrap; /* Ensure line breaks in content */
+    word-wrap: break-word; /* Ensure long lines break correctly */
+    max-height: 600px; /* Max height of the body */
+    overflow-y: auto; /* Allow scrolling if the content is long */
+}
+
+/* Transition effect for the modal */
+.modal.show {
+    opacity: 1;
+}
+
+.modal-content.show {
+    opacity: 1;
+    transform: scale(1);
+}
+/* Button Styles */
+.open-log-btn {
+    background-color: #0070d2;  /* Salesforce blue */
+    color: white;                /* Text color */
+    font-size: 14px;             /* Text size */
+    padding: 8px 16px;           /* Button padding */
+    border-radius: 4px;          /* Rounded corners */
+    border: none;                /* Remove border */
+    cursor: pointer;            /* Pointer cursor */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+/* Hover effect */
+.open-log-btn:hover {
+    background-color: #005bb5;  /* Darker blue */
+    transform: scale(1.05);      /* Slight zoom effect */
+}
+
+/* Focus effect */
+.open-log-btn:focus {
+    outline: none;              /* Remove focus outline */
+    box-shadow: 0 0 0 3px rgba(0, 112, 210, 0.4);  /* Blue glow */
+}
+
+/* Active effect */
+.open-log-btn:active {
+    background-color: #003f8e;  /* Even darker blue */
+    transform: scale(0.98);      /* Slight shrink on click */
+}
+
+.debug-checkbox {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.debug-checkbox input {
+    margin-left: 5px;
+}
+
     </style>
 </head>
 <body>
     <p id="tabUrl">Loading tab URL...</p>
 
     <h2>Today's Apex Logs</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Start Time</th>
-                <th>Status</th>
-                <th>Log Length (KB)</th>
-               
-            </tr>
-        </thead>
-        <tbody id="logTable">
-            <tr><td colspan="3">Loading logs...</td></tr>
-        </tbody>
-    </table>
+
+    <div class="filters">
+        <label for="filterUser">Filter by User:</label>
+        <select id="filterUser">
+            <option value="">All Users</option>
+        </select>
+
+        <label for="filterTime">Show logs after:</label>
+        <input type="time" id="filterTime" value="00:00">
+    </div>
+
+    <!-- Reset Button Section -->
+    <div class="filter-actions">
+        <button class="reset-btn" id="resetFilters">Clear Filters</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID <span class="resize-handle"></span></th>
+                    <th>Start Time <span class="resize-handle"></span></th>
+                    <th>Status <span class="resize-handle"></span></th>
+                    <th>Log Length (KB) <span class="resize-handle"></span></th>
+                    <th>User <span class="resize-handle"></span></th>
+                    <th>Action <span class="resize-handle"></span></th>
+                </tr>
+            </thead>
+            <tbody id="logTable">
+                <tr><td colspan="5">Loading logs...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Reset Filters Functionality
+     
+
+        // Existing Resize functionality for table columns
+        document.querySelectorAll("th").forEach(th => {
+            const handle = document.createElement("span");
+            handle.classList.add("resize-handle");
+            th.appendChild(handle);
+
+            let isResizing = false;
+
+            handle.addEventListener("mousedown", (e) => {
+                isResizing = true;
+                const startX = e.pageX;
+                const startWidth = th.offsetWidth;
+
+                const doResize = (moveEvent) => {
+                    if (isResizing) {
+                        const newWidth = startWidth + (moveEvent.pageX - startX);
+                        th.style.width = newWidth + "px";
+                    }
+                };
+
+                const stopResize = () => {
+                    isResizing = false;
+                    document.removeEventListener("mousemove", doResize);
+                    document.removeEventListener("mouseup", stopResize);
+                };
+
+                document.addEventListener("mousemove", doResize);
+                document.addEventListener("mouseup", stopResize);
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,19 +1,58 @@
 
+// chrome.cookies.getAll({ domain: ".salesforce.com" }, function (cookies) {
+//     let sessionId = null;
+   
+//     cookies.forEach((cookie) => {
+//         if (cookie.name === "sid") {
+//             sessionId = cookie.value;
+//         }
+//     });
+
+//     if (sessionId) {
+//         chrome.storage.local.remove('sid', function() {
+//             console.log('Old sid removed from storage');
+//         });
+//         console.log("Salesforce Session ID:", sessionId);
+//         chrome.storage.local.set({ sid: sessionId }, function() {
+//             console.log("New session id stored in chrome.storage.local which is ->",sessionId);
+//         });
+//     } else {
+//         console.error("Session ID not found.");
+//     }
+// });
+
 chrome.cookies.getAll({ domain: ".salesforce.com" }, function (cookies) {
     let sessionId = null;
+
+    // Look for the "sid" cookie (Salesforce session cookie)
     cookies.forEach((cookie) => {
         if (cookie.name === "sid") {
             sessionId = cookie.value;
         }
     });
 
+    // Check if the sessionId is found
     if (sessionId) {
-        console.log("Salesforce Session ID:", sessionId);
-        chrome.storage.local.set({ sid: sessionId });
+        // Log and remove the old session ID from chrome.storage.local
+        chrome.storage.local.get('sid', function(data) {
+            if (data.sid && data.sid !== sessionId) {
+                console.log('Old session ID detected:', data.sid);
+                chrome.storage.local.remove('sid', function() {
+                    console.log('Old sid removed from storage');
+                });
+            }
+        });
+
+        // Store the new session ID in chrome.storage.local
+        chrome.storage.local.set({ sid: sessionId }, function() {
+            console.log("New session ID stored in chrome.storage.local:", sessionId);
+        });
+
     } else {
         console.error("Session ID not found.");
     }
 });
+
 
 chrome.action.onClicked.addListener(() => {
     chrome.system.display.getInfo((displays) => {
