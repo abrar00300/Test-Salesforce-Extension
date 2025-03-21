@@ -164,7 +164,7 @@
     padding: 20px;
     border-radius: 8px;
     width: 70%; /* Adjust width as needed */
-    max-width: 800px; /* Max width */
+    max-width: 1300px; /* Max width */
     min-height: 300px; /* Fixed minimum height */
     height: 700px;
     overflow-y: auto;
@@ -178,9 +178,9 @@
 /* Close button */
 .close-btn {
     position: absolute;
-    top: px;
-    right: 10px;
-    font-size: 34px;
+    top: -5px;
+    right: 12px;
+    font-size: 59px;
     color: #333;
     cursor: pointer;
     background-color: transparent;
@@ -198,6 +198,7 @@
     word-wrap: break-word; /* Ensure long lines break correctly */
     max-height: 600px; /* Max height of the body */
     overflow-y: auto; /* Allow scrolling if the content is long */
+    font-size: 15px;
 }
 
 /* Transition effect for the modal */
@@ -239,6 +240,38 @@
     transform: scale(0.98);      /* Slight shrink on click */
 }
 
+
+.download-log-btn {
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s;
+    height: 32px;
+}
+
+.download-log-btn:hover {
+    background-color: #1e7e34; /* Darker green */
+    transform: scale(1.05); 
+}
+
+.delete-log-btn {
+    background-color: #dc3545; /* Red */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 5px;
+    height: 32px;
+}
+.delete-log-btn:hover {
+    background-color: #b02a37;
+    transform: scale(1.05); 
+}
+
 .debug-checkbox {
     margin-bottom: 10px;
     font-size: 14px;
@@ -248,36 +281,124 @@
     margin-left: 5px;
 }
 
+#refreshLogs {
+    background-color: #007bff; /* Salesforce blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    
+    width: 150px;
+    text-align: center;
+}
+
+#refreshLogs:hover {
+    background-color: #0056b3; /* Darker blue */
+    
+}
+
+#refreshLogs:active {
+    background-color: #00408a;
+    transform: scale(0.95);
+}
+
+/* Set fixed width for action column */
+th:nth-child(6),
+td:nth-child(6) {
+    width: 200px; /* Adjust width as needed */
+    text-align: center;
+}
+
+/* Ensure action buttons fit in one row */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Buttons inside Action Column */
+.action-buttons button {
+    flex: 1;
+    min-width: 65px; /* Prevent shrinking */
+    padding: 6px;
+    font-size: 12px;
+}
+
+/* Go to Top Button */
+#goToTopBtn {
+    position: fixed;
+    bottom: 40px;
+    right: 32px;
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    font-size: 24px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.2s;
+}
+
+#goToTopBtn:hover {
+    background-color: #0056b3; /* Darker blue */
+    transform: scale(1.1);
+}
+
     </style>
 </head>
 <body>
     <p id="tabUrl">Loading tab URL...</p>
 
     <h2>Today's Apex Logs</h2>
+    
 
     <div class="filters">
-        <label for="filterUser">Filter by User:</label>
+        <label style="    display: flex;
+        align-items: center;" for="filterUser">Filter by User:</label>
         <select id="filterUser">
             <option value="">All Users</option>
         </select>
 
-        <label for="filterTime">Show logs after:</label>
+        <label style="    display: flex;
+        align-items: center;" for="filterTime">Show logs after:</label>
         <input type="time" id="filterTime" value="00:00">
+
+        <label style="    display: flex;
+        align-items: center;" for="filterStatus">Filter by Status:</label>
+<select id="filterStatus">
+    <option value="">All</option>
+    <option value="Success">Success</option>
+    <option value="Error">Error</option>
+</select>
+
     </div>
 
     <!-- Reset Button Section -->
     <div class="filter-actions">
         <button class="reset-btn" id="resetFilters">Clear Filters</button>
+        <button  id="refreshLogs">🔄 Refresh</button>
+
+        <!-- <button id="clearStorageBtn">Clear Local Storage</button> -->
     </div>
+    <!-- Go to Top Button -->
+<button id="goToTopBtn">⬆</button>
 
     <div class="table-container">
         <table>
-            <thead>
+            <thead style="top: -1px;">
                 <tr>
                     <th>ID <span class="resize-handle"></span></th>
                     <th>Start Time <span class="resize-handle"></span></th>
                     <th>Status <span class="resize-handle"></span></th>
-                    <th>Log Length (KB) <span class="resize-handle"></span></th>
+                    <th>Log Length  <span class="resize-handle"></span></th>
                     <th>User <span class="resize-handle"></span></th>
                     <th>Action <span class="resize-handle"></span></th>
                 </tr>
