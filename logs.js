@@ -28,7 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     fetchApexLogs(data.sid, instanceUrl);
                 });
-             
+                document.addEventListener('contextmenu', function(event) {
+                    event.preventDefault();
+                });
+                document.addEventListener('keydown', function(event) {
+                    if ((event.key === 'F12') || (event.ctrlKey && event.shiftKey && event.key === 'I')) {
+                        event.preventDefault();
+                        console.log("Inspecting is disabled.");
+                    }
+                });
+                                
 
 
                 document.getElementById("refreshLogs").addEventListener("click", function () {
